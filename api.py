@@ -8,6 +8,14 @@ to use client-side session systems, this stores things there.
 
 
 from flask import session
+from HTMLParser import HTMLParser
+
+class HTMLCleaner(HTMLParser):
+    container= ""
+
+    def handle_data(self, data):
+        self.container+= data
+        return self.container
 
 # So that you can play with the `get` API, we return a single
 # test message as the default.
@@ -49,21 +57,22 @@ def wall_add(msg):
         returns: dictionary with messages list + result code.
     """
 
+    h = HTMLCleaner()
+    h.feed(msg)
+    msg = h.container
+
     wall_dict = {
         "message": msg,
     }
 
     session.setdefault('wall', []).append(wall_dict)
-
     result = wall_list()
     result["result"] = "Message Received"
-
     return result
+
 
 def wall_clear():
     session['wall'] = DEFAULT_MESSAGES 
-
     result = wall_list()
     result["result"] = "Messages Cleared"
-
     return result

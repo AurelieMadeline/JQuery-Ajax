@@ -11,9 +11,9 @@ $(document).ready(function () {
             function (data) {
                 displayMessages(data);
             });
-   
     });
 });
+
 
 
 /**
@@ -31,6 +31,11 @@ function handleFormSubmit(evt) {
     // Reset the message container to be empty
     textArea.val("");
 
+ $('#message-send').attr('disabled', true) ;
+    setTimeout(function (){
+        $("#message-send").attr('disabled', false);
+   },5000);
+
 }
 
 
@@ -43,7 +48,7 @@ function addMessage(msg) {
         {'m': msg},
         function (data) {
             console.log("addMessage: ", data);
-            displayResultStatus(data.result);
+            displayResultStatus(data);
             displayMessages(data);
 
         }
@@ -51,6 +56,9 @@ function addMessage(msg) {
 }
 
 function displayMessages(data){
+    if (!("messages" in data)) {
+        return;
+    }
      //console.log (data);
     $("#message-container").empty();
     console.log(data.messages);
@@ -66,13 +74,7 @@ function getMessages(){
             displayMessages(data);
         });
 }
-    // setTimeout(function() {
-//     //   $("#message-send").prop("disabled", false);},5000);
 
-// $("#message-send").click(function() {
-//     $("#message-send").prop("disabled", true);
-
-// });
 
 
 
@@ -80,8 +82,13 @@ function getMessages(){
  * This is a helper function that does nothing but show a section of the
  * site (the message result) and then hide it a moment later.
  */
-function displayResultStatus(resultMsg) {
+function displayResultStatus(data) {
+    var resultMsg = data.result;
     var notificationArea = $("#sent-result");
+    notificationArea.removeClass("alert-danger").addClass("alert-info");
+    if (!("messages" in data)) {
+        notificationArea.removeClass("alert-info").addClass("alert-danger");
+    }
     notificationArea.text(resultMsg);
     notificationArea.slideDown(function () {
         // In JavaScript, "this" is a keyword that means "the object this

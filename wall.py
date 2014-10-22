@@ -5,6 +5,7 @@ from flask import Flask, request, render_template, make_response
 from api import wall_list, wall_add, wall_error, wall_clear
 
 
+
 app = Flask(__name__)
 
 # The "secret key" is needed for the Flask session machinery. In a real
