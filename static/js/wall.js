@@ -2,8 +2,17 @@ $(document).ready(function () {
     // Normally, JavaScript runs code at the time that the <script>
     // tags loads the JS. By putting this inside a jQuery $(document).ready()
     // function, this code only gets run when the document finishing loading.
-
     $("#message-form").submit(handleFormSubmit);
+    getMessages();
+    $('#clear').click(function (e){
+        e.preventDefault();
+         $.get(
+            "/api/wall/clear",
+            function (data) {
+                displayMessages(data);
+            });
+   
+    });
 });
 
 
@@ -21,6 +30,7 @@ function handleFormSubmit(evt) {
 
     // Reset the message container to be empty
     textArea.val("");
+
 }
 
 
@@ -34,9 +44,36 @@ function addMessage(msg) {
         function (data) {
             console.log("addMessage: ", data);
             displayResultStatus(data.result);
+            displayMessages(data);
+
         }
     );
 }
+
+function displayMessages(data){
+     //console.log (data);
+    $("#message-container").empty();
+    console.log(data.messages);
+    $(data.messages).each(function(index) {
+        console.log(data.messages[index].message);
+    $("#message-container").prepend("<li class='list-group-item'>" + data.messages[index].message);
+    });
+}
+function getMessages(){
+    $.get(
+        "/api/wall/list",
+        function (data) {
+            displayMessages(data);
+        });
+}
+    // setTimeout(function() {
+//     //   $("#message-send").prop("disabled", false);},5000);
+
+// $("#message-send").click(function() {
+//     $("#message-send").prop("disabled", true);
+
+// });
+
 
 
 /**

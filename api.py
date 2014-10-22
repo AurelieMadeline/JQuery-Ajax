@@ -12,7 +12,7 @@ from flask import session
 # So that you can play with the `get` API, we return a single
 # test message as the default.
 DEFAULT_MESSAGES = [
-    {'message': 'Welcome! (this is the built-in first message)'},
+    {'message': 'Welcome!'},
 ]
 
 
@@ -57,5 +57,13 @@ def wall_add(msg):
 
     result = wall_list()
     result["result"] = "Message Received"
+
+    return result
+
+def wall_clear():
+    session['wall'] = DEFAULT_MESSAGES 
+
+    result = wall_list()
+    result["result"] = "Messages Cleared"
 
     return result
